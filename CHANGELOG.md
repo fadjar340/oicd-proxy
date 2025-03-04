@@ -9,3 +9,4 @@
 - Support token validation with OIDC provider using symetric key
 - Mimic as keycloak services
 - OAuth2 proxy support for custom API
+- As OIDC provider for OHIF Viewer
