@@ -1,0 +1,12 @@
+# OIDC Configuration
+VITE_APP_OIDC_AUTHORITY=https://your-oidc-proxy.com
+VITE_APP_OIDC_CLIENT_ID=your-client-id
+VITE_APP_OIDC_CLIENT_SECRET=your-client-secret
+VITE_APP_OIDC_REDIRECT_URI=https://your-ohif-viewer.com/callback
+VITE_APP_OIDC_POST_LOGOUT_REDIRECT_URI=https://your-ohif-viewer.com
+VITE_APP_OIDC_SCOPE=openid profile
+
+# DICOMWeb Configuration
+VITE_APP_DICOMWEB_WADO_URI_ROOT=https://your-pacs-server.com/wado
+VITE_APP_DICOMWEB_QIDO_ROOT=https://your-pacs-server.com/qido
+VITE_APP_DICOMWEB_WADO_ROOT=https://your-pacs-server.com/wado
