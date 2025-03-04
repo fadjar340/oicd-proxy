@@ -2,7 +2,6 @@ from fastapi import FastAPI, HTTPException, Depends, Form
 from fastapi.security import HTTPBearer
 from jose import jwt, JWTError
 import requests
-import multipart
 from datetime import datetime, timedelta
 import os
 from dotenv import load_dotenv
@@ -41,7 +40,8 @@ def token(
     )
 
     if token_response.status_code != 200:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        print(f"Error from custom OAuth2 token endpoint: {token_response.status_code} - {token_response.text}")
+        raise HTTPException(status_code=token_response.status_code, detail=token_response.text)
 
     # Extract the access token from the response
     access_token = token_response.json().get("access_token")
@@ -55,7 +55,7 @@ def token(
         authorities = decoded_token.get("authorities", [])
         hospital_code = decoded_token.get("hospital_code")
         hospital_name = decoded_token.get("hospital_name")
-    except jwt.InvalidTokenError as e:
+    except JWTError as e:
         raise HTTPException(status_code=401, detail="Invalid token")
 
     # Generate OIDC-compliant ID token
@@ -88,7 +88,7 @@ def token(
 def userinfo(token: str = Depends(security)):
     try:
         # Decode the JWT token to extract user information
-        decoded_token = jwt.decode(token.credentials, options={"verify_signature": False})  # Skip signature verification
+        decoded_token = jwt.decode(token.credentials, SECRET_KEY, algorithms=["HS256"])  # Verify signature
         user_name = decoded_token.get("user_name")
         fullname = decoded_token.get("fullname")
         user_id = decoded_token.get("user_id")
@@ -104,7 +104,7 @@ def userinfo(token: str = Depends(security)):
             "hospital_code": hospital_code,  # Hospital code
             "hospital_name": hospital_name,  # Hospital name
         }
-    except jwt.InvalidTokenError as e:
+    except JWTError as e:
         raise HTTPException(status_code=401, detail="Invalid token")
 
 # Discovery endpoint
